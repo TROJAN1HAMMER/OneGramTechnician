@@ -14,8 +14,11 @@ import { getWaterLatest, getWaterHistory } from '../api/water';
 import { Navbar } from '../components/Navbar';
 import { StatusChip } from '../components/StatusChip';
 import { ChartSkeleton, CardSkeleton } from '../components/LoadingSkeleton';
+import { useRealtimeTelemetry } from '../hooks/useRealtimeTelemetry';
 
 export const WaterPage: React.FC = () => {
+  useRealtimeTelemetry();
+
   const {
     data: latestWater,
     isLoading: isLoadingLatest,

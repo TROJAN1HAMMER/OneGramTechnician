@@ -171,6 +171,24 @@ def get_environment_history(
 
 
 @router.get(
+    "/rfid/history",
+    response_model=List[Any], # Schema is dynamically returned by the service or we can import it
+    summary="Get Historical RFID Scans",
+    description="Retrieve historical RFID attendance scan events.",
+)
+def get_rfid_history_endpoint(
+    device_code: Optional[str] = Query(None, description="Filter by device code e.g. RFID-001"),
+    limit: int = Query(50, ge=1, le=500),
+    offset: int = Query(0, ge=0),
+    db: Session = Depends(get_db),
+    current_tech: User = Depends(get_current_technician),
+) -> Any:
+    return dashboard_service.get_rfid_history(
+        db, device_code=device_code, limit=limit, offset=offset
+    )
+
+
+@router.get(
     "/alerts",
     response_model=List[AlertRead],
     summary="List IoT Operations Alerts",

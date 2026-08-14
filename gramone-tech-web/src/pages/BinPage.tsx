@@ -14,8 +14,11 @@ import { getBinLatest, getBinHistory } from '../api/bin';
 import { Navbar } from '../components/Navbar';
 import { StatusChip } from '../components/StatusChip';
 import { ChartSkeleton, CardSkeleton } from '../components/LoadingSkeleton';
+import { useRealtimeTelemetry } from '../hooks/useRealtimeTelemetry';
 
 export const BinPage: React.FC = () => {
+  useRealtimeTelemetry();
+
   const {
     data: latestBin,
     isLoading: isLoadingLatest,

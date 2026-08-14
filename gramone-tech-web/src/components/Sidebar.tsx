@@ -8,11 +8,13 @@ import {
   BellRing,
   Cpu,
   LogOut,
+  Shield,
 } from 'lucide-react';
 import { logout } from '../api/auth';
 
 const navItems = [
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
+  { name: 'Access & Safety', path: '/access-control', icon: Shield },
   { name: 'Water Monitoring', path: '/water', icon: Droplets },
   { name: 'Smart Bin', path: '/bin', icon: Trash2 },
   { name: 'Environment', path: '/environment', icon: Thermometer },

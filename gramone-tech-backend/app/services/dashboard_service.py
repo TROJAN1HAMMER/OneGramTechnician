@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Any
 from sqlalchemy.orm import Session
 from sqlalchemy import func, desc, select
 
@@ -91,5 +91,38 @@ def get_telemetry_history_by_type(
         t_read = TelemetryRead.model_validate(telemetry)
         t_read.device_code = d_code
         history.append(t_read)
+
+    return history
+
+
+def get_rfid_history(
+    db: Session,
+    device_code: Optional[str] = None,
+    limit: int = 50,
+    offset: int = 0,
+) -> List[Any]: # Returning Any here and casting to schema later or import schema
+    from app.models.attendance_event import AttendanceEvent
+    from app.schemas.attendance import AttendanceEventRead
+
+    query = (
+        db.query(AttendanceEvent, Device.device_code)
+        .join(Device, AttendanceEvent.device_id == Device.id)
+    )
+
+    if device_code:
+        query = query.filter(Device.device_code == device_code)
+
+    results = (
+        query.order_by(AttendanceEvent.scanned_at.desc())
+        .offset(offset)
+        .limit(limit)
+        .all()
+    )
+
+    history = []
+    for event, d_code in results:
+        e_read = AttendanceEventRead.model_validate(event)
+        e_read.device_code = d_code
+        history.append(e_read)
 
     return history

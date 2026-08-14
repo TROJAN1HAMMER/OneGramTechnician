@@ -1,11 +1,12 @@
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.core.config import settings
 from app.db.session import SessionLocal
 from app.db.init_db import init_db
 from app.api import auth_router, telemetry_router, technician_router, health_router
+from app.services.websocket_manager import ws_manager
 
 
 @asynccontextmanager
@@ -53,3 +54,19 @@ def root():
         "status": "online",
         "documentation": "/docs",
     }
+
+
+@app.websocket("/ws/telemetry")
+async def websocket_telemetry(websocket: WebSocket):
+    """
+    WebSocket endpoint for real-time telemetry push.
+    Web clients connect here to receive instant updates
+    whenever ESP32 hardware sends new sensor data.
+    """
+    await ws_manager.connect(websocket)
+    try:
+        while True:
+            # Keep connection alive; wait for client messages (ping/pong)
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        ws_manager.disconnect(websocket)

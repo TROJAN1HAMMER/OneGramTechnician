@@ -1,5 +1,5 @@
 from datetime import datetime, timezone, timedelta
-from typing import Optional, List, Tuple
+from typing import Optional, List, Tuple, Any
 from sqlalchemy.orm import Session
 from sqlalchemy import select, and_
 
@@ -63,6 +63,7 @@ def get_or_create_device(
             "WATER-001": "Main Water Tank",
             "BIN-001": "Market Street Bin",
             "ENV-001": "School Campus Sensor",
+            "RFID-001": "Coimbatore",
         }
         location_name = location_map.get(device_code, f"Location {device_code}")
         device = Device(

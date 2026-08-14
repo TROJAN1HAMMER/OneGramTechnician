@@ -67,3 +67,11 @@ export interface AlertActionResponse {
   message: string;
   alert: Alert;
 }
+
+export interface AttendanceEvent {
+  id: number;
+  device_id: number;
+  card_uid: string;
+  scanned_at: string;
+  device_code?: string;
+}

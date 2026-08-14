@@ -10,6 +10,7 @@ import { BinPage } from './pages/BinPage';
 import { EnvironmentPage } from './pages/EnvironmentPage';
 import { AlertsPage } from './pages/AlertsPage';
 import { DeviceDetailPage } from './pages/DeviceDetailPage';
+import { AccessSafetyPage } from './pages/AccessSafetyPage';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -83,6 +84,15 @@ export const App: React.FC = () => {
             element={
               <ProtectedLayout>
                 <AlertsPage />
+              </ProtectedLayout>
+            }
+          />
+
+          <Route
+            path="/access-control"
+            element={
+              <ProtectedLayout>
+                <AccessSafetyPage />
               </ProtectedLayout>
             }
           />

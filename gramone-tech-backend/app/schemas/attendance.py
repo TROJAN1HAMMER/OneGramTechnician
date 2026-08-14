@@ -1,3 +1,5 @@
+from datetime import datetime
+from typing import Optional
 from pydantic import BaseModel, Field
 
 
@@ -21,3 +23,14 @@ class EmergencyButtonResponse(BaseModel):
     status: str = "success"
     message: str
     alert_id: int
+
+
+class AttendanceEventRead(BaseModel):
+    id: int
+    device_id: int
+    card_uid: str
+    scanned_at: datetime
+    device_code: Optional[str] = None
+
+    class Config:
+        from_attributes = True

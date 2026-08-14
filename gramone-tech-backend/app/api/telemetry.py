@@ -1,3 +1,4 @@
+import asyncio
 from typing import Any
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
@@ -22,8 +23,18 @@ from app.services.telemetry_service import (
     process_rfid_scan,
     process_emergency_button,
 )
+from app.services.websocket_manager import ws_manager
 
 router = APIRouter(prefix="/telemetry", tags=["Telemetry Ingestion"])
+
+
+def _broadcast(message: dict):
+    """Fire-and-forget WebSocket broadcast from sync context."""
+    try:
+        loop = asyncio.get_running_loop()
+        loop.create_task(ws_manager.broadcast(message))
+    except RuntimeError:
+        pass
 
 
 @router.post(
@@ -37,6 +48,20 @@ def ingest_water_telemetry(
     payload: WaterTelemetryCreate, db: Session = Depends(get_db)
 ) -> Any:
     telemetry, alerts = process_water_telemetry(db, payload)
+
+    # Broadcast to WebSocket clients
+    _broadcast({
+        "type": "water",
+        "data": {
+            "telemetry_id": telemetry.id,
+            "device_code": payload.device_code,
+            "water_level": payload.water_level,
+            "battery_level": payload.battery_level,
+            "timestamp": str(telemetry.timestamp),
+            "alerts_generated": len(alerts),
+        },
+    })
+
     return TelemetryIngestResponse(
         status="success",
         message=f"Water telemetry ingested successfully for device '{payload.device_code}'",
@@ -56,6 +81,20 @@ def ingest_bin_telemetry(
     payload: BinTelemetryCreate, db: Session = Depends(get_db)
 ) -> Any:
     telemetry, alerts = process_bin_telemetry(db, payload)
+
+    # Broadcast to WebSocket clients
+    _broadcast({
+        "type": "bin",
+        "data": {
+            "telemetry_id": telemetry.id,
+            "device_code": payload.device_code,
+            "fill_level": payload.fill_level,
+            "battery_level": payload.battery_level,
+            "timestamp": str(telemetry.timestamp),
+            "alerts_generated": len(alerts),
+        },
+    })
+
     return TelemetryIngestResponse(
         status="success",
         message=f"Bin telemetry ingested successfully for device '{payload.device_code}'",
@@ -75,6 +114,21 @@ def ingest_environment_telemetry(
     payload: EnvironmentTelemetryCreate, db: Session = Depends(get_db)
 ) -> Any:
     telemetry, alerts = process_environment_telemetry(db, payload)
+
+    # Broadcast to WebSocket clients
+    _broadcast({
+        "type": "environment",
+        "data": {
+            "telemetry_id": telemetry.id,
+            "device_code": payload.device_code,
+            "temperature": payload.temperature,
+            "humidity": payload.humidity,
+            "battery_level": payload.battery_level,
+            "timestamp": str(telemetry.timestamp),
+            "alerts_generated": len(alerts),
+        },
+    })
+
     return TelemetryIngestResponse(
         status="success",
         message=f"Environment telemetry ingested successfully for device '{payload.device_code}'",
@@ -94,6 +148,18 @@ def record_rfid_scan(
     payload: RfidScanCreate, db: Session = Depends(get_db)
 ) -> Any:
     event = process_rfid_scan(db, payload)
+
+    # Broadcast to WebSocket clients
+    _broadcast({
+        "type": "rfid",
+        "data": {
+            "event_id": event.id,
+            "device_code": payload.device_code,
+            "card_uid": payload.card_uid,
+            "timestamp": str(event.scanned_at),
+        },
+    })
+
     return RfidScanResponse(
         status="success",
         message=f"Attendance scan logged for card '{payload.card_uid}'",
@@ -112,6 +178,19 @@ def trigger_emergency_alert(
     payload: EmergencyButtonCreate, db: Session = Depends(get_db)
 ) -> Any:
     alert = process_emergency_button(db, payload)
+
+    # Broadcast to WebSocket clients
+    _broadcast({
+        "type": "emergency",
+        "data": {
+            "alert_id": alert.id,
+            "device_code": payload.device_code,
+            "severity": "CRITICAL",
+            "message": alert.message,
+            "timestamp": str(alert.created_at),
+        },
+    })
+
     return EmergencyButtonResponse(
         status="success",
         message=f"Emergency panic button alert created for device '{payload.device_code}'",

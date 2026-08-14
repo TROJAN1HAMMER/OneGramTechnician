@@ -16,8 +16,11 @@ import { getAlerts } from '../api/alerts';
 import { Navbar } from '../components/Navbar';
 import { StatusChip } from '../components/StatusChip';
 import { CardSkeleton } from '../components/LoadingSkeleton';
+import { useRealtimeTelemetry } from '../hooks/useRealtimeTelemetry';
 
 export const DashboardPage: React.FC = () => {
+  useRealtimeTelemetry();
+
   const {
     data: summary,
     isLoading: isLoadingSummary,
