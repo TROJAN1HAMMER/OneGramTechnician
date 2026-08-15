@@ -19,6 +19,7 @@ import { Navbar } from '../components/Navbar';
 import { StatusChip } from '../components/StatusChip';
 import { CardSkeleton } from '../components/LoadingSkeleton';
 import type { Device } from '../types';
+import { parseDate } from '../utils/date';
 
 // Map device type → icon + accent colour
 const deviceTypeConfig: Record<
@@ -177,7 +178,7 @@ export const DeviceDetailPage: React.FC = () => {
                   <p className="font-bold text-text-primary text-sm flex items-center">
                     <Clock className="w-3.5 h-3.5 mr-1 text-emerald-400" />
                     {device.last_seen_at
-                      ? new Date(device.last_seen_at).toLocaleString()
+                      ? parseDate(device.last_seen_at).toLocaleString()
                       : 'Never / Standby'}
                   </p>
                 </div>
@@ -185,7 +186,7 @@ export const DeviceDetailPage: React.FC = () => {
                 <div className="p-4 rounded-btn bg-surface-alt border border-border/40 space-y-1">
                   <span className="text-text-secondary font-medium">Registration Date</span>
                   <p className="font-bold text-text-primary text-sm">
-                    {new Date(device.created_at).toLocaleDateString()}
+                    {parseDate(device.created_at).toLocaleDateString()}
                   </p>
                 </div>
               </div>
@@ -250,7 +251,7 @@ export const DeviceDetailPage: React.FC = () => {
                       </div>
                       <p className="font-medium text-text-primary">{alert.message}</p>
                       <p className="text-[10px] text-text-secondary">
-                        {new Date(alert.created_at).toLocaleString()}
+                        {parseDate(alert.created_at).toLocaleString()}
                       </p>
                     </div>
                   ))}

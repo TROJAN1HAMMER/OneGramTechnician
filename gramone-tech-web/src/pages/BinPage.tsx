@@ -15,6 +15,7 @@ import { Navbar } from '../components/Navbar';
 import { StatusChip } from '../components/StatusChip';
 import { ChartSkeleton, CardSkeleton } from '../components/LoadingSkeleton';
 import { useRealtimeTelemetry } from '../hooks/useRealtimeTelemetry';
+import { parseDate } from '../utils/date';
 
 export const BinPage: React.FC = () => {
   useRealtimeTelemetry();
@@ -52,7 +53,7 @@ export const BinPage: React.FC = () => {
     .slice()
     .reverse()
     .map((item) => ({
-      time: new Date(item.timestamp).toLocaleTimeString([], {
+      time: parseDate(item.timestamp).toLocaleTimeString([], {
         hour: '2-digit',
         minute: '2-digit',
       }),
@@ -133,7 +134,7 @@ export const BinPage: React.FC = () => {
                 <Clock className="w-3.5 h-3.5 mr-1" />
                 Last Serviced / Updated:{' '}
                 {latestBin?.timestamp
-                  ? new Date(latestBin.timestamp).toLocaleString()
+                  ? parseDate(latestBin.timestamp).toLocaleString()
                   : 'N/A'}
               </span>
               <span className="flex items-center">

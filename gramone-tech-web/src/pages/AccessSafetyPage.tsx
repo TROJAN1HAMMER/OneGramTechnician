@@ -6,6 +6,7 @@ import { getAlerts } from '../api/alerts';
 import { Navbar } from '../components/Navbar';
 import { CardSkeleton } from '../components/LoadingSkeleton';
 import { useRealtimeTelemetry } from '../hooks/useRealtimeTelemetry';
+import { parseDate } from '../utils/date';
 
 export const AccessSafetyPage: React.FC = () => {
   const queryClient = useQueryClient();
@@ -92,7 +93,7 @@ export const AccessSafetyPage: React.FC = () => {
                        </div>
                      </div>
                      <div className="text-xs text-text-secondary whitespace-nowrap">
-                       {new Date(alert.created_at).toLocaleString()}
+                       {parseDate(alert.created_at).toLocaleString()}
                      </div>
                    </div>
                  ))}
@@ -139,7 +140,7 @@ export const AccessSafetyPage: React.FC = () => {
                         {scan.device_code || `ID: ${scan.device_id}`}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-text-secondary">
-                        {new Date(scan.scanned_at).toLocaleString()}
+                        {parseDate(scan.scanned_at).toLocaleString()}
                       </td>
                     </tr>
                   ))}

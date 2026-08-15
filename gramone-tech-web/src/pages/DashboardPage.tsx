@@ -17,6 +17,7 @@ import { Navbar } from '../components/Navbar';
 import { StatusChip } from '../components/StatusChip';
 import { CardSkeleton } from '../components/LoadingSkeleton';
 import { useRealtimeTelemetry } from '../hooks/useRealtimeTelemetry';
+import { parseDate } from '../utils/date';
 
 export const DashboardPage: React.FC = () => {
   useRealtimeTelemetry();
@@ -164,7 +165,7 @@ export const DashboardPage: React.FC = () => {
                 <div className="mt-4">
                   <span className="text-sm font-bold text-text-primary block truncate">
                     {summary?.last_sync
-                      ? new Date(summary.last_sync).toLocaleTimeString([], {
+                      ? parseDate(summary.last_sync).toLocaleTimeString([], {
                           hour: '2-digit',
                           minute: '2-digit',
                           second: '2-digit',
@@ -173,7 +174,7 @@ export const DashboardPage: React.FC = () => {
                   </span>
                   <p className="text-xs text-text-secondary mt-1 font-medium truncate">
                     {summary?.last_sync
-                      ? new Date(summary.last_sync).toLocaleDateString()
+                      ? parseDate(summary.last_sync).toLocaleDateString()
                       : 'No Telemetry Yet'}
                   </p>
                 </div>

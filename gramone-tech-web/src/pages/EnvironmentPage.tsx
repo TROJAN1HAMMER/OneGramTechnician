@@ -15,6 +15,7 @@ import { Navbar } from '../components/Navbar';
 import { StatusChip } from '../components/StatusChip';
 import { ChartSkeleton, CardSkeleton } from '../components/LoadingSkeleton';
 import { useRealtimeTelemetry } from '../hooks/useRealtimeTelemetry';
+import { parseDate } from '../utils/date';
 
 export const EnvironmentPage: React.FC = () => {
   useRealtimeTelemetry();
@@ -68,7 +69,7 @@ export const EnvironmentPage: React.FC = () => {
     .slice()
     .reverse()
     .map((item) => ({
-      time: new Date(item.timestamp).toLocaleTimeString([], {
+      time: parseDate(item.timestamp).toLocaleTimeString([], {
         hour: '2-digit',
         minute: '2-digit',
       }),
@@ -177,7 +178,7 @@ export const EnvironmentPage: React.FC = () => {
               <Clock className="w-3.5 h-3.5 mr-1" />
               Updated:{' '}
               {latestEnv?.timestamp
-                ? new Date(latestEnv.timestamp).toLocaleTimeString()
+                ? parseDate(latestEnv.timestamp).toLocaleTimeString()
                 : 'N/A'}
             </div>
           </div>

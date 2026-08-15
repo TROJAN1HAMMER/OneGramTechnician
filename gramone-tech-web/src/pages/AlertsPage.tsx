@@ -13,6 +13,7 @@ import { getAlerts, acknowledgeAlert, resolveAlert } from '../api/alerts';
 import { Navbar } from '../components/Navbar';
 import { StatusChip } from '../components/StatusChip';
 import { CardSkeleton } from '../components/LoadingSkeleton';
+import { parseDate } from '../utils/date';
 
 export const AlertsPage: React.FC = () => {
   const queryClient = useQueryClient();
@@ -182,7 +183,7 @@ export const AlertsPage: React.FC = () => {
                         </span>
                       )}
                       <span className="text-xs text-text-secondary">
-                        • {new Date(alert.created_at).toLocaleString()}
+                        • {parseDate(alert.created_at).toLocaleString()}
                       </span>
                     </div>
 
@@ -191,10 +192,10 @@ export const AlertsPage: React.FC = () => {
                     <div className="flex items-center space-x-4 text-xs text-text-secondary">
                       <span>Type: <code className="text-primary font-mono">{alert.alert_type}</code></span>
                       {alert.acknowledged_at && (
-                        <span>Ack at: {new Date(alert.acknowledged_at).toLocaleTimeString()}</span>
+                        <span>Ack at: {parseDate(alert.acknowledged_at).toLocaleTimeString()}</span>
                       )}
                       {alert.resolved_at && (
-                        <span>Resolved at: {new Date(alert.resolved_at).toLocaleTimeString()}</span>
+                        <span>Resolved at: {parseDate(alert.resolved_at).toLocaleTimeString()}</span>
                       )}
                     </div>
                   </div>

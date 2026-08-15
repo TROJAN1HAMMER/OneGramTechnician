@@ -6,11 +6,11 @@ import {
   Trash2,
   Thermometer,
   BellRing,
-  Cpu,
   LogOut,
   Shield,
 } from 'lucide-react';
 import { logout } from '../api/auth';
+import gramoneLogo from '../assets/gramone-logo.jpg';
 
 const navItems = [
   { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
@@ -29,9 +29,11 @@ export const Sidebar: React.FC = () => {
       <div>
         {/* Logo Branding */}
         <div className="flex items-center space-x-3 px-3 py-4 mb-6 border-b border-border/40">
-          <div className="w-10 h-10 rounded-xl bg-primary/20 border border-primary/40 flex items-center justify-center">
-            <Cpu className="w-6 h-6 text-primary" />
-          </div>
+          <img
+            src={gramoneLogo}
+            alt="GramOne Logo"
+            className="w-11 h-11 rounded-xl object-cover"
+          />
           <div>
             <h1 className="font-bold text-text-primary text-base leading-tight">GramOne IoT</h1>
             <p className="text-xs text-text-secondary font-medium">Technician Operations</p>
